@@ -20,6 +20,9 @@ namespace Android.OS
         private static IntPtr _methodPtr_Vibrate1 = IntPtr.Zero;
         private static IntPtr _methodPtr_Vibrate2 = IntPtr.Zero;
         private static bool? _hasVibrator = null;
+        private static jvalue[] _arg0 = null;
+        private static jvalue[] _arg1 = null;
+        private static jvalue[] _arg2 = null;
 #endif //UNITY_ANDROID_NATIVE
 
         [System.Diagnostics.Conditional("UNITY_ANDROID")]
@@ -32,11 +35,11 @@ namespace Android.OS
                 _vibrator = activity.Call<AndroidJavaObject>("getSystemService", "vibrator");
                 if (_vibrator != null)
                 {
-                    var objPtr = _vibrator.GetRawObject();
-                    _methodPtr_Cancel = AndroidJNI.GetMethodID(objPtr, "cancel", "()Z");
-                    _methodPtr_HasVibrator = AndroidJNI.GetMethodID(objPtr, "hasVibrator", "()Z");
-                    _methodPtr_Vibrate1 = AndroidJNI.GetMethodID(objPtr, "vibrate", "(J)V");
-                    _methodPtr_Vibrate2 = AndroidJNI.GetMethodID(objPtr, "vibrate", "([JI)V");
+                    var classPtr = _vibrator.GetRawClass();
+                    _methodPtr_Cancel = AndroidJNI.GetMethodID(classPtr, "cancel", "()V");
+                    _methodPtr_HasVibrator = AndroidJNI.GetMethodID(classPtr, "hasVibrator", "()Z");
+                    _methodPtr_Vibrate1 = AndroidJNI.GetMethodID(classPtr, "vibrate", "(J)V");
+                    _methodPtr_Vibrate2 = AndroidJNI.GetMethodID(classPtr, "vibrate", "([JI)V");
                 }
             }
 #endif //UNITY_ANDROID_NATIVE
@@ -70,7 +73,8 @@ namespace Android.OS
             if (!IsInitialized) Initialize();
             if (_vibrator != null && _methodPtr_Cancel != IntPtr.Zero)
             {
-                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Cancel, null);
+                if (_arg0 == null) _arg0 = new jvalue[0];
+                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Cancel, _arg0);
             }
 #endif //UNITY_ANDROID_NATIVE
         }
@@ -85,7 +89,8 @@ namespace Android.OS
                     if (!IsInitialized) Initialize();
                     if (_vibrator != null && _methodPtr_HasVibrator != IntPtr.Zero)
                     {
-                        _hasVibrator = AndroidJNI.CallBooleanMethod(_vibrator.GetRawObject(), _methodPtr_HasVibrator, null);
+                        if (_arg0 == null) _arg0 = new jvalue[0];
+                        _hasVibrator = AndroidJNI.CallBooleanMethod(_vibrator.GetRawObject(), _methodPtr_HasVibrator, _arg0);
                     }
                 }
                 return _hasVibrator.Value;
@@ -102,7 +107,9 @@ namespace Android.OS
             if (!IsInitialized) Initialize();
             if (_vibrator != null && _methodPtr_Vibrate1 != IntPtr.Zero)
             {
-                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Vibrate1, new[] { new jvalue() { j = milliseconds } });
+                if (_arg1 == null) _arg1 = new jvalue[1];
+                _arg1[0] = new jvalue() { j = milliseconds };
+                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Vibrate1, _arg1);
             }
 #endif //UNITY_ANDROID_NATIVE
         }
@@ -115,10 +122,10 @@ namespace Android.OS
             if (_vibrator != null && _methodPtr_Vibrate1 != IntPtr.Zero)
             {
                 var patternPtr = AndroidJNI.ToLongArray(pattern);
-                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Vibrate2, new[] {
-                    new jvalue() { l = patternPtr },
-                    new jvalue() { i = repeat }
-                });
+                if (_arg2 == null) _arg2 = new jvalue[2];
+                _arg2[0] = new jvalue() { l = patternPtr };
+                _arg2[1] = new jvalue() { i = repeat };
+                AndroidJNI.CallVoidMethod(_vibrator.GetRawObject(), _methodPtr_Vibrate2, _arg2);
                 AndroidJNI.DeleteLocalRef(patternPtr);
             }
 #endif //UNITY_ANDROID_NATIVE
